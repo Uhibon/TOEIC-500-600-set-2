@@ -1,91 +1,423 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Slideshow</title>
-  <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TOEIC (500-600) set-2 – Boo-riculum</title>
+  <link rel="icon" type="image/png" href="booha-ghost.png">
   <style>
-    body {
-      margin: 0;
-      font-family: sans-serif;
-      background: #f2f2f2;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+    :root { --ink:#222; --muted:#444; --accent:#0b78ff; --ok:#22c55e; --bad:#ef4444; }
+    html,body{height:100%;}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Helvetica,Arial,sans-serif;
+      color:var(--ink);
+      background:url('Booha card.jpg') center/cover fixed no-repeat;
     }
-    .swiper {
-      width: 95%;
-      max-width: 900px;
-      height: 90vh;
+    .wrap{max-width:900px;margin:0 auto;padding:16px 16px 24px;}
+    header{
+      display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;
+      margin-bottom:12px;background:rgba(255,255,255,0.88);padding:12px 16px;
+      border-radius:16px;box-shadow:0 4px 10px rgba(0,0,0,0.15)
     }
-    .swiper-slide img {
-      width: 100%;
-      height: auto;
-      object-fit: contain;
+    header h1{
+      font-size:18px;margin:0;font-weight:800;letter-spacing:.3px;
+      background:linear-gradient(90deg,#7dd3fc,#60a5fa,#a78bfa,#f472b6);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+      display:flex;align-items:center;gap:8px
     }
+    header h1 img{height:28px;width:auto;}
+    .controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+    select,button{
+      background:rgba(255,255,255,0.95);color:var(--ink);border:1px solid #ccc;
+      border-radius:12px;padding:10px 12px;font-size:14px;
+      box-shadow:0 2px 5px rgba(0,0,0,0.08)
+    }
+    button{cursor:pointer;transition:transform .05s ease, background .2s}
+    button:hover{background:#f0f0f0}
+    button:active{transform:scale(.98)}
+    .pill{border:1px solid #ccc;border-radius:999px;padding:6px 10px;font-size:12px;background:rgba(255,255,255,0.7)}
+    .card{
+      user-select:none;-webkit-user-select:none;display:flex;flex-direction:column;justify-content:center;align-items:center;
+      text-align:center;background:url('Booha card.jpg') center/cover no-repeat;
+      border:1px solid #ccc;border-radius:24px;min-height:56vh;margin:16px auto;padding:22px 18px 28px;
+      box-shadow:0 10px 40px rgba(0,0,0,.25); position:relative;
+    }
+    .brand{
+      position:absolute;top:10px;left:12px;display:flex;gap:8px;align-items:center;
+      background:rgba(255,255,255,0.85);padding:6px 10px;border-radius:12px;border:1px solid #ddd;
+      box-shadow:0 2px 6px rgba(0,0,0,0.08); font-weight:800; letter-spacing:.2px;
+    }
+    .brand img{height:20px;width:auto}
+    .brand span{background:linear-gradient(90deg,#7dd3fc,#60a5fa,#a78bfa,#f472b6);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+    .label{color:var(--muted);font-size:13px;letter-spacing:.3px;margin-bottom:8px;
+      background:rgba(255,255,255,0.7);padding:4px 8px;border-radius:8px}
+    .main{font-size:28px;line-height:1.25;font-weight:800;margin:8px 0 10px;
+      background:rgba(255,255,255,0.86);padding:8px 12px;border-radius:12px}
+    .sub{font-size:18px;opacity:.92;margin:0 0 6px;background:rgba(255,255,255,0.65);
+      padding:4px 10px;border-radius:8px}
+    .hira{font-size:18px;color:var(--accent);opacity:.95;background:rgba(255,255,255,0.75);
+      padding:4px 10px;border-radius:8px}
+    .muted{color:var(--muted)}
+    .row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+    .footer{
+      display:flex;align-items:center;justify-content:space-between;margin-top:8px;color:var(--muted);font-size:13px;
+      background:rgba(255,255,255,0.85);padding:8px 12px;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.1)
+    }
+    .progress{height:8px;border-radius:999px;background:#eee;overflow:hidden}
+    .progress>span{display:block;height:100%;background:linear-gradient(90deg,#7dd3fc,#60a5fa,#a78bfa,#f472b6);width:0%}
+    .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+    @media (max-width:700px){.grid{grid-template-columns:repeat(2,minmax(0,1fr));} .main{font-size:24px}}
+    a{color:#0b78ff;text-decoration:none}
+    .hidden{display:none}
+    .options{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:12px}
+    .optbtn{border:1px solid #ccc;border-radius:12px;padding:10px 14px;background:rgba(255,255,255,0.95);cursor:pointer}
+    .optbtn.ok{background:#dcfce7;border-color:#86efac;color:#166534}
+    .optbtn.bad{background:#fee2e2;border-color:#fca5a5;color:#991b1b}
+    .small{font-size:15px; line-height:1.45;}
   </style>
 </head>
 <body>
+  <div class="wrap">
+    <header>
+      <h1><img src="booha-ghost.png" alt="Booha ghost"> Boo-riculum – TOEIC (500-600) set-2</h1>
+      <div class="controls">
+        <select id="mode" aria-label="Mode">
+          <option value="vocab-j2e">Vocab: 🇯🇵 → 🇺🇸</option>
+          <option value="vocab-e2j">Vocab: 🇺🇸 → 🇯🇵</option>
+          <option value="sentences">Sentences (practice)</option>
+          <option value="qa">Questions (practice)</option>
+          <option value="quiz">Quiz (multiple choice)</option>
+          <option value="reading">Reading</option>
+        </select>
+      </div>
+    </header>
 
-  <div class="swiper">
-    <div class="swiper-wrapper">
-      <div class="swiper-slide"><img src="01.jpg" alt="01"></div>
-      <div class="swiper-slide"><img src="02.jpg" alt="02"></div>
-      <div class="swiper-slide"><img src="03.jpg" alt="03"></div>
-      <div class="swiper-slide"><img src="04.jpg" alt="04"></div>
-      <div class="swiper-slide"><img src="05.jpg" alt="05"></div>
-      <div class="swiper-slide"><img src="06.jpg" alt="06"></div>
-      <div class="swiper-slide"><img src="07.jpg" alt="07"></div>
-      <div class="swiper-slide"><img src="08.jpg" alt="08"></div>
-      <div class="swiper-slide"><img src="09.jpg" alt="09"></div>
-      <div class="swiper-slide"><img src="10.jpg" alt="10"></div>
-      <div class="swiper-slide"><img src="11.jpg" alt="11"></div>
-      <div class="swiper-slide"><img src="12.jpg" alt="12"></div>
-      <div class="swiper-slide"><img src="13.jpg" alt="13"></div>
-      <div class="swiper-slide"><img src="14.jpg" alt="14"></div>
-      <div class="swiper-slide"><img src="15.jpg" alt="15"></div>
-      <div class="swiper-slide"><img src="16.jpg" alt="16"></div>
-      <div class="swiper-slide"><img src="17.jpg" alt="17"></div>
-      <div class="swiper-slide"><img src="18.jpg" alt="18"></div>
-      <div class="swiper-slide"><img src="19.jpg" alt="19"></div>
-      <div class="swiper-slide"><img src="20.jpg" alt="20"></div>
-      <div class="swiper-slide"><img src="21.jpg" alt="21"></div>
-      <div class="swiper-slide"><img src="22.jpg" alt="22"></div>
-      <div class="swiper-slide"><img src="23.jpg" alt="23"></div>
-      <div class="swiper-slide"><img src="24.jpg" alt="24"></div>
-      <div class="swiper-slide"><img src="25.jpg" alt="25"></div>
-      <div class="swiper-slide"><img src="26.jpg" alt="26"></div>
-      <div class="swiper-slide"><img src="27.jpg" alt="27"></div>
-      <div class="swiper-slide"><img src="28.jpg" alt="28"></div>
-      <div class="swiper-slide"><img src="29.jpg" alt="29"></div>
-      <div class="swiper-slide"><img src="30.jpg" alt="30"></div>
-      <div class="swiper-slide"><img src="31.jpg" alt="31"></div>
-      <div class="swiper-slide"><img src="32.jpg" alt="32"></div>
-      <div class="swiper-slide"><img src="33.jpg" alt="33"></div>
+    <div id="card" class="card" role="button" aria-label="flashcard" tabindex="0">
+      <div class="brand"><img src="booha-ghost.png" alt="Booha ghost"><span>Boo-riculum</span></div>
+      <div id="label" class="label">Front</div>
+      <div id="main" class="main">—</div>
+      <div id="sub" class="sub muted">Tap or press Space to flip</div>
+      <div id="hira" class="hira hidden"></div>
+      <div id="mcArea" class="options hidden"></div>
     </div>
 
-    <div class="swiper-button-next"></div>
-    <div class="swiper-button-prev"></div>
-    <div class="swiper-pagination"></div>
+    <div class="footer">
+      <div class="row">
+        <span class="pill" title="Left / Right keys">Keyboard: ← →</span>
+        <span class="pill" title="Space to flip">Space = Flip</span>
+        <button id="btnPrev" title="← or swipe right">◀︎ Prev</button>
+        <button id="btnFlip" title="Tap / Space">Flip</button>
+        <button id="btnNext" title="→ or swipe left">Next ▶︎</button>
+        <button id="btnShuffle" title="Shuffle deck">Shuffle</button>
+      </div>
+      <div style="min-width:180px;text-align:right">
+        <div id="counter" class="muted">0 / 0</div>
+        <div class="progress" aria-hidden="true"><span id="bar"></span></div>
+      </div>
+    </div>
   </div>
 
-  <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
   <script>
-    const swiper = new Swiper('.swiper', {
-      loop: false,
-      navigation: {
-        nextEl: '.swiper-button-next',
-        prevEl: '.swiper-button-prev',
-      },
-      pagination: {
-        el: '.swiper-pagination',
-        clickable: true,
-      },
-      grabCursor: true,
-    });
-  </script>
+    // ---------------- Data (500-600 Set 2) ----------------
+    // NOTE: none of these duplicate set-1 items.
+    const VOCAB = [
+      { en:"acknowledge", ja:"認める" },
+      { en:"adjust", ja:"調整する" },
+      { en:"affordable", ja:"手頃な価格の" },
+      { en:"alternative", ja:"代替の" },
+      { en:"analyze", ja:"分析する" },
+      { en:"anticipate", ja:"予期する" },
+      { en:"appeal", ja:"魅力／訴える" },
+      { en:"approve", ja:"承認する" },
+      { en:"arrange", ja:"手配する" },
+      { en:"attach", ja:"添付する" },
+      { en:"attempt", ja:"試みる" },
+      { en:"aware", ja:"気づいている" },
+      { en:"balance", ja:"均衡／残高" },
+      { en:"benefit", ja:"利益／恩恵" },
+      { en:"brief", ja:"簡潔な" },
+      { en:"broadcast", ja:"放送する" },
+      { en:"calculate", ja:"計算する" },
+      { en:"candidate", ja:"候補者" },
+      { en:"deadline", ja:"締め切り" },
+      { en:"deliver", ja:"納品する／配達する" }
+    ];
 
+    const SENTENCES = [
+      { en:"Please acknowledge receipt of the package.", ja:"荷物の受領を確認してください。" },
+      { en:"We should adjust the budget for next quarter.", ja:"来期の予算を調整すべきです。" },
+      { en:"Our goal is to provide affordable services.", ja:"手頃な価格のサービスを提供することが目標です。" },
+      { en:"If the vendor is unavailable, choose an alternative.", ja:"業者が不在なら代替案を選びましょう。" },
+      { en:"The team will analyze customer feedback.", ja:"チームは顧客のフィードバックを分析します。" },
+      { en:"We anticipate strong demand this summer.", ja:"今夏は強い需要を見込んでいます。" },
+      { en:"The design appeals to first-time buyers.", ja:"そのデザインは初めての購入者に魅力的です。" },
+      { en:"Management approved the hiring plan.", ja:"経営陣は採用計画を承認しました。" },
+      { en:"Could you arrange transportation to the venue?", ja:"会場までの交通手段を手配していただけますか？" },
+      { en:"Please attach the invoice to your email.", ja:"メールに請求書を添付してください。" },
+      { en:"She attempted to resolve the issue quickly.", ja:"彼女は迅速に問題を解決しようとしました。" },
+      { en:"Be aware of the updated safety rules.", ja:"更新された安全規則に気をつけてください。" },
+      { en:"Check your account balance before purchase.", ja:"購入前に口座残高を確認してください。" },
+      { en:"This policy brings long-term benefits.", ja:"この方針は長期的な利益をもたらします。" },
+      { en:"Keep the presentation brief and informative.", ja:"プレゼンは簡潔で有益にしてください。" },
+      { en:"The ceremony will be broadcast nationwide.", ja:"式典は全国放送されます。" },
+      { en:"We calculated the shipping cost precisely.", ja:"配送費を正確に計算しました。" },
+      { en:"Three candidates were shortlisted.", ja:"3名の候補者が最終選考に残りました。" },
+      { en:"The deadline for submissions is Friday.", ja:"提出の締め切りは金曜日です。" },
+      { en:"They deliver fresh produce every morning.", ja:"彼らは毎朝新鮮な農産物を配達します。" }
+    ];
+
+    const QA = [
+      { q_en:"What does it mean to acknowledge an email?", a_en:"To confirm that you received and read it.", q_ja:"メールをacknowledgeするとは？", a_ja:"受け取り・確認したことを知らせること。" },
+      { q_en:"When should you adjust your schedule?", a_en:"When new priorities or delays appear.", q_ja:"いつスケジュールを調整しますか？", a_ja:"新たな優先事項や遅延が発生したとき。" },
+      { q_en:"Why choose an affordable option?", a_en:"It saves money while meeting requirements.", q_ja:"なぜ手頃な選択肢を選ぶ？", a_ja:"要件を満たしつつ費用を抑えられるから。" },
+      { q_en:"What is an alternative solution?", a_en:"A different method that achieves the goal.", q_ja:"代替解とは何？", a_ja:"目的を達成する別の方法。" },
+      { q_en:"How do you analyze a problem?", a_en:"Break it into parts and study the data.", q_ja:"問題をどう分析する？", a_ja:"要素に分けてデータを検討する。" },
+      { q_en:"What does it mean to anticipate risks?", a_en:"To foresee them and prepare responses.", q_ja:"リスクを予期するとは？", a_ja:"前もって想定し対策を準備すること。" },
+      { q_en:"What does 'appeal to users' mean?", a_en:"To be attractive or interesting to them.", q_ja:"ユーザーにアピールするとは？", a_ja:"魅力的・興味を引くこと。" },
+      { q_en:"Who approves a large purchase?", a_en:"A manager or the finance department.", q_ja:"大口購入を承認するのは誰？", a_ja:"管理職または経理部門。" },
+      { q_en:"What does it mean to arrange a meeting?", a_en:"To set time, place, and participants.", q_ja:"会議を手配するとは？", a_ja:"時間・場所・参加者を決めること。" },
+      { q_en:"Why attach a file to an email?", a_en:"To include documents or images.", q_ja:"なぜメールにファイルを添付？", a_ja:"文書や画像を同封するため。" },
+      { q_en:"What is an attempt?", a_en:"An effort to do something difficult.", q_ja:"attemptとは何？", a_ja:"難しいことに挑戦する試み。" },
+      { q_en:"What does 'be aware of changes' mean?", a_en:"Know the updates and act accordingly.", q_ja:"変更に気づくとは？", a_ja:"更新点を理解しそれに応じて行動すること。" },
+      { q_en:"What is an account balance?", a_en:"The money available in an account.", q_ja:"口座残高とは？", a_ja:"口座で利用可能なお金。" },
+      { q_en:"What is an employee benefit?", a_en:"An extra perk like insurance or leave.", q_ja:"従業員の福利厚生とは？", a_ja:"保険や休暇などの特典。" },
+      { q_en:"Why keep instructions brief?", a_en:"To make them quick and easy to follow.", q_ja:"指示を簡潔にする理由？", a_ja:"素早く理解しやすくするため。" },
+      { q_en:"What does it mean to broadcast news?", a_en:"To air it on TV, radio, or online.", q_ja:"ニュースを放送するとは？", a_ja:"テレビ・ラジオ・オンラインで発信すること。" },
+      { q_en:"How do you calculate total cost?", a_en:"Add all fees, taxes, and discounts.", q_ja:"総費用をどう計算？", a_ja:"手数料・税金・割引を合算する。" },
+      { q_en:"Who is a candidate?", a_en:"A person applying for a position.", q_ja:"candidateとは誰？", a_ja:"職に応募している人。" },
+      { q_en:"What is a deadline?", a_en:"The final date and time for submission.", q_ja:"締め切りとは？", a_ja:"提出の最終日時。" },
+      { q_en:"What does it mean to deliver goods?", a_en:"To bring and hand them to the buyer.", q_ja:"商品を納品するとは？", a_ja:"購入者に品物を届け渡すこと。" }
+    ];
+
+    // Quiz: 20 questions, 4 options each, only proceed after correct choice
+    const QUIZ = [
+      { q:"'Acknowledge' most nearly means:", options:["ignore","confirm","argue","delay"], answer:1, ja:"『acknowledge』の意味に最も近いのは？" },
+      { q:"To 'adjust' a plan is to:", options:["finalize it","cancel it","modify it","copy it"], answer:2, ja:"計画を『adjust』するとは？" },
+      { q:"An 'affordable' price is:", options:["excessive","reasonable","hidden","variable"], answer:1, ja:"『affordable』な価格とは？" },
+      { q:"An 'alternative' is a:", options:["restriction","duplicate","substitute","mistake"], answer:2, ja:"『alternative』とは？" },
+      { q:"To 'analyze' data is to:", options:["guess","examine","delete","announce"], answer:1, ja:"データを『analyze』するとは？" },
+      { q:"To 'anticipate' problems is to:", options:["ignore them","expect them","create them","report them"], answer:1, ja:"問題を『anticipate』するとは？" },
+      { q:"To 'appeal' to customers is to:", options:["confuse them","attract them","replace them","charge them"], answer:1, ja:"顧客に『appeal』するとは？" },
+      { q:"To 'approve' a request is to:", options:["reject it","sign it","postpone it","overlook it"], answer:1, ja:"依頼を『approve』するとは？" },
+      { q:"To 'arrange' a visit is to:", options:["complain","organize","delay","remove"], answer:1, ja:"訪問を『arrange』するとは？" },
+      { q:"To 'attach' a file is to:", options:["compress it","rename it","include it","translate it"], answer:2, ja:"ファイルを『attach』するとは？" },
+      { q:"An 'attempt' is a:", options:["failure","plan","trial","survey"], answer:2, ja:"『attempt』とは？" },
+      { q:"To be 'aware' of rules is to:", options:["violate them","know them","write them","sell them"], answer:1, ja:"規則を『aware』であるとは？" },
+      { q:"Your account 'balance' is your:", options:["income","loan","savings","available funds"], answer:3, ja:"口座『balance』は？" },
+      { q:"A 'benefit' is a:", options:["risk","cost","loss","perk"], answer:3, ja:"『benefit』とは？" },
+      { q:"A 'brief' report is:", options:["long","complicated","short","outdated"], answer:2, ja:"『brief』な報告とは？" },
+      { q:"To 'broadcast' an event is to:", options:["cancel it","air it","delay it","predict it"], answer:1, ja:"イベントを『broadcast』するとは？" },
+      { q:"To 'calculate' the fee is to:", options:["estimate roughly","pay it","compute it","waive it"], answer:2, ja:"料金を『calculate』するとは？" },
+      { q:"A 'candidate' is a person who:", options:["is leaving","is applying","is buying","is voting"], answer:1, ja:"『candidate』とは？" },
+      { q:"A 'deadline' is:", options:["a starting point","a requirement","a final due time","a discount"], answer:2, ja:"『deadline』とは？" },
+      { q:"To 'deliver' goods is to:", options:["store them","send them to the buyer","design them","inspect them"], answer:1, ja:"商品を『deliver』するとは？" }
+    ];
+
+    // Extra reading practice (fresh lines, distinct from set-1)
+    const READING = [
+      { en:"Please attach your resume to the online form.", ja:"オンラインフォームに履歴書を添付してください。" },
+      { en:"The conference will be broadcast from 9 a.m.", ja:"会議は午前9時から放送されます。" },
+      { en:"We anticipate higher sales during the holiday.", ja:"休暇期間中に売上の増加を見込んでいます。" },
+      { en:"Keep all instructions brief and specific.", ja:"すべての指示を簡潔かつ具体的にしてください。" },
+      { en:"Three candidates advanced to the final interview.", ja:"3名の候補者が最終面接に進みました。" },
+      { en:"Please calculate the total including taxes.", ja:"税金を含めた合計を計算してください。" },
+      { en:"The new layout appeals to international visitors.", ja:"新しいレイアウトは海外の来場者に魅力的です。" },
+      { en:"We adjusted the deadline after the outage.", ja:"障害後に締め切りを調整しました。" },
+      { en:"Kindly acknowledge this message upon receipt.", ja:"受信したらこのメッセージを確認してください。" },
+      { en:"Use an alternative route to avoid congestion.", ja:"渋滞を避けるため別ルートを利用してください。" },
+      { en:"The supplier will deliver samples on Monday.", ja:"仕入先は月曜日にサンプルを納品します。" },
+      { en:"Be aware of phishing emails asking for passwords.", ja:"パスワードを求めるフィッシングメールに注意してください。" },
+      { en:"The benefit of automation is greater accuracy.", ja:"自動化の利点はより高い正確性です。" },
+      { en:"Finance approved the reimbursement claim.", ja:"経理が払い戻し申請を承認しました。" },
+      { en:"They arranged a shuttle from the station.", ja:"駅からのシャトルを手配しました。" },
+      { en:"Our estimate is affordable for small teams.", ja:"見積もりは小規模チームに手頃です。" },
+      { en:"Please analyze the survey before the meeting.", ja:"会議前にアンケートを分析してください。" },
+      { en:"We will deliver the final draft by Friday.", ja:"金曜日までに最終稿を提出します。" },
+      { en:"Broadcast media covered the product launch.", ja:"メディアが製品発表を取り上げました。" },
+      { en:"Your current balance appears on the last page.", ja:"現在の残高は最終ページに表示されています。" }
+    ];
+
+    // -------------- State & Elements --------------
+    let deck = [];
+    let index = 0;
+    let showingFront = true;
+
+    const els = {
+      mode: document.getElementById('mode'),
+      card: document.getElementById('card'),
+      label: document.getElementById('label'),
+      main: document.getElementById('main'),
+      sub: document.getElementById('sub'),
+      hira: document.getElementById('hira'),
+      counter: document.getElementById('counter'),
+      bar: document.getElementById('bar'),
+      btnPrev: document.getElementById('btnPrev'),
+      btnNext: document.getElementById('btnNext'),
+      btnFlip: document.getElementById('btnFlip'),
+      btnShuffle: document.getElementById('btnShuffle'),
+      mcArea: document.getElementById('mcArea'),
+    };
+
+    // -------------- Helpers --------------
+    function shuffle(arr){ for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]]} return arr; }
+
+    // -------------- Build Decks --------------
+    function buildDeck(){
+      const mode = els.mode.value;
+      if(mode==='vocab-j2e' || mode==='vocab-e2j'){
+        deck = VOCAB.map(x=>({
+          type:'vocab',
+          front: mode==='vocab-j2e' ? x.ja : x.en,
+          back:  mode==='vocab-j2e' ? x.en : x.ja,
+          sideLabelFront: mode==='vocab-j2e' ? 'Japanese → English' : 'English → Japanese',
+          sideLabelBack:  mode==='vocab-j2e' ? 'English' : 'Japanese',
+        }));
+      } else if(mode==='sentences'){
+        deck = SENTENCES.map(s=>({
+          type:'sentence',
+          front: s.ja,
+          back: s.en + '\n' + s.ja,
+          sideLabelFront: 'Japanese sentence',
+          sideLabelBack: 'Answer (EN + JA)',
+        }));
+      } else if(mode==='qa'){
+        deck = QA.map(q=>({
+          type:'qa',
+          front: q.q_ja || q.q_en,
+          back: (q.a_en || '') + (q.a_ja ? '\n' + q.a_ja : ''),
+          sideLabelFront: (q.q_ja ? 'Question (JA)' : 'Question (EN)'),
+          sideLabelBack: 'Answer (EN + JA)',
+        }));
+      } else if(mode==='quiz'){
+        deck = QUIZ.map(q=>({
+          type:'quiz4',
+          front: q.q,
+          back: (q.ja ? q.ja + '\n' : '') + 'Answer: ' + q.options[q.answer],
+          options: q.options,
+          answer: q.answer,
+          sideLabelFront: 'Choose the best answer',
+          sideLabelBack: 'Explanation',
+        }));
+      } else if(mode==='reading'){
+        deck = READING.map(r=>({
+          type:'reading',
+          front: r.en,
+          back: r.en + '\n' + r.ja,
+          sideLabelFront: 'Reading (EN)',
+          sideLabelBack: 'Reading (EN + JA)',
+        }));
+      }
+      index = 0; showingFront = true; render();
+    }
+
+    // -------------- Render --------------
+    function render(){
+      if(deck.length===0){ els.main.textContent='—'; els.sub.textContent='No cards'; els.counter.textContent='0 / 0'; return; }
+      const item = deck[index];
+      const mode = els.mode.value;
+      els.label.textContent = showingFront ? item.sideLabelFront : item.sideLabelBack;
+
+      const content = showingFront ? item.front : item.back;
+      if((!showingFront) && (item.type==='qa' || item.type==='sentence' || item.type==='reading') && content.includes('\n')){
+        const [line1, line2] = content.split('\n');
+        els.main.innerHTML = `<div style="font-size:22px;font-weight:700" class="${item.type==='reading'?'small':''}">${line1}</div>
+                              <div class="sub ${item.type==='reading'?'small':''}" style="margin-top:8px">${line2}</div>`;
+      } else {
+        els.main.innerHTML = `<div class="${item.type==='reading'?'small':''}">${content}</div>`;
+      }
+
+      // QUIZ behavior: wrong stays red and disabled; only proceed on correct
+      if(mode==='quiz' && item.type==='quiz4' && showingFront){
+        els.sub.textContent = 'Choose the correct answer.';
+        els.mcArea.classList.remove('hidden');
+        els.mcArea.innerHTML = '';
+        item.options.forEach((opt, i)=>{
+          const btn = document.createElement('button');
+          btn.className = 'optbtn';
+          btn.textContent = opt;
+          btn.addEventListener('click', (e)=>{
+            e.preventDefault(); e.stopPropagation();
+            if(i !== item.answer){
+              btn.classList.add('bad');
+              btn.disabled = true;
+              return;
+            }
+            btn.classList.add('ok');
+            [...els.mcArea.querySelectorAll('button')].forEach(b=>b.disabled=true);
+            setTimeout(()=>{ showingFront = false; render(); }, 250);
+          }, { passive:false });
+          els.mcArea.appendChild(btn);
+        });
+      } else {
+        els.mcArea.classList.add('hidden');
+        els.mcArea.innerHTML = '';
+        if(item.type==='quiz4' && showingFront){ els.sub.textContent = 'Choose the correct answer.'; }
+        else { els.sub.textContent = 'Tap / Space to flip · Swipe / ← → to navigate'; }
+      }
+
+      els.counter.textContent = `${index+1} / ${deck.length}`;
+      els.bar.style.width = `${((index+1)/deck.length)*100}%`;
+      setHash();
+    }
+
+    // -------------- Navigation --------------
+    function prev(){ index = (index-1+deck.length)%deck.length; showingFront=true; render(); }
+    function next(){ index = (index+1)%deck.length; showingFront=true; render(); }
+    function flip(){ showingFront = !showingFront; render(); }
+    function shuffleDeck(){ deck = shuffle(deck); index=0; showingFront=true; render(); }
+
+    // -------------- URL Hash --------------
+    function setHash(){ location.hash = `#${els.mode.value}:${index}`; }
+    function readHash(){
+      const h = location.hash.replace('#','');
+      if(!h) return;
+      const [m, i] = h.split(':');
+      if(m && [...els.mode.options].some(o=>o.value===m)) els.mode.value = m;
+      if(i && !Number.isNaN(+i)) index = Math.max(0, Math.min(deck.length-1, +i));
+    }
+
+    // -------------- Events --------------
+    els.mode.addEventListener('change', ()=>{ buildDeck(); setHash(); });
+    document.getElementById('btnPrev').addEventListener('click', prev);
+    document.getElementById('btnNext').addEventListener('click', next);
+    document.getElementById('btnFlip').addEventListener('click', flip);
+    document.getElementById('btnShuffle').addEventListener('click', shuffleDeck);
+
+    window.addEventListener('keydown', (e)=>{
+      if(e.code==='ArrowLeft'){ e.preventDefault(); prev(); }
+      else if(e.code==='ArrowRight'){ e.preventDefault(); next(); }
+      else if(e.code==='Space'){ e.preventDefault(); if(!(els.mode.value==='quiz' && showingFront)) flip(); }
+      else if(['1','2','3','4'].includes(e.key) && els.mode.value==='quiz' && showingFront){
+        const i = parseInt(e.key,10)-1; const b=els.mcArea.querySelectorAll('button')[i]; if(b) b.click();
+      }
+    });
+
+    document.getElementById('card').addEventListener('click', (e)=>{
+      if(els.mode.value==='quiz' && showingFront) return;
+      flip();
+    }, { passive:true });
+
+    let touchStartX=null, touchStartY=null;
+    document.getElementById('card').addEventListener('touchstart', (e)=>{
+      const t=e.changedTouches[0]; touchStartX=t.clientX; touchStartY=t.clientY;
+    }, {passive:true});
+    document.getElementById('card').addEventListener('touchend', (e)=>{
+      const t=e.changedTouches[0]; if(touchStartX===null) return;
+      const dx=t.clientX - touchStartX; const dy=t.clientY - touchStartY;
+      if(Math.abs(dx)>50 && Math.abs(dx)>Math.abs(dy)){
+        if(dx>0) prev(); else next();
+      } else if(Math.abs(dy)<10 && Math.abs(dx)<10){
+        if(!(els.mode.value==='quiz' && showingFront)) flip();
+      }
+      touchStartX=touchStartY=null;
+    }, {passive:true});
+
+    // Init
+    buildDeck();
+    readHash();
+    render();
+  </script>
 </body>
 </html>
